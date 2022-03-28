@@ -19,6 +19,13 @@ app.get("/", async (req, res) => {
   res.status(200).send(JSON.stringify(rooms));
 });
 
+app.get("/:id", async (req, res) => {
+  const snapshot = await admin.firestore().collection("webexRoomIds").doc(req.params.id).get();
+  const roomId = snapshot.id;
+  const roomData = snapshot.data();
+  res.status(200).send(JSON.stringify({id: roomId, ...roomData}));
+});
+
 app.post("/", async (req, res) => {
   const room = req.body; // Grabs the Webex Room Details
   await admin.firestore().collection("webexRoomIds").doc(req.body.title).set(room);
