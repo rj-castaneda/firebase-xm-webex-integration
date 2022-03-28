@@ -8,9 +8,15 @@ admin.initializeApp();
 
 const app = express();
 
-app.get("/", (req, res) => {
-  
-
+app.get("/", async (req, res) => {
+  const snapshot = await admin.firestore().collection("webexRoomIds").get();
+  const rooms = [];
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    rooms.push({id, ...data});
+  });
+  res.status(200).send(JSON.stringify(rooms));
 });
 
 app.post("/", async (req, res) => {
